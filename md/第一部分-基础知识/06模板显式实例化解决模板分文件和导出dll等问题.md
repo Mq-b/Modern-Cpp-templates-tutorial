@@ -12,9 +12,7 @@
 
 我们自己指明，到底需要哪些具体的函数。
 
-## 语法
-
-### 函数模板显式实例化
+## 函数模板显式实例化
 
 ```
 template 返回类型 名字 < 实参列表 > ( 形参列表 ) ;	        (1)	
@@ -28,8 +26,98 @@ extern template 返回类型 名字 ( 形参列表 ) ;	            (4)	(C++11 �
 3. 显式实例化声明（显式指定所有无默认值模板形参时不会推导模板实参）
 4. 显式实例化声明，对所有形参进行模板实参推导
 
-**显式实例化定义强制实例化它所指代的函数或成员函数**。它可以出现在程序中模板定义后的任何位置，而对于给定的实参列表，它在整个程序中只能出现一次，不要求诊断。
+- ***在模板分文件问题中，几乎不会使用到显式实例化声明。***
+- ***在模板分文件问题中，几乎不会涉及到类的显式实例化***
 
-显式实例化声明（extern 模板）阻止隐式实例化：本来会导致隐式实例化的代码必须改为使用已在程序的别处所提供的显式实例化。(C++11 起)
 
-在函数模板特化或成员函数模板特化的显式实例化中，尾部的各模板实参在能从函数参数推导时不需要指定
+>**显式实例化定义强制实例化它所指代的函数或成员函数**。它可以出现在程序中模板定义后的任何位置，而对于给定的实参列表，它在整个程序中只能出现一次，不要求诊断。
+
+>显式实例化声明（extern 模板）阻止隐式实例化：本来会导致隐式实例化的代码必须改为使用已在程序的别处所提供的显式实例化。(C++11 起)
+
+>在函数模板特化或成员函数模板特化的显式实例化中，尾部的各模板实参在能从函数参数推导时不需要指定。
+
+## 使用示例
+
+我们用 cmake 构建了一个[简单的项目](/code/04显式实例化解决模板分文件问题/)展示使用显式实例化函数模板的语法解决，类模板、函数模板分文件的问题。
+
+[**`main.cpp`**](/code/04显式实例化解决模板分文件问题/main.cpp)
+
+```cpp
+#include "test_function_template.h"
+#include "test_class_template.h"
+
+int main() {
+    f_t(1);
+    f_t(1.2);
+    f_t('c');
+    //f_t("1"); // 没有显式实例化 f_t<const char*> 版本，会有链接错误
+
+    N::X<int>x;
+    x.f();
+    N::X<double>x2{};
+    //x2.f();   // 链接错误，没有显式实例化 X<double>::f()
+
+    // 类模板分文件 没有使用到类模板显式实例化，而是使用了函数模板显式实例化。
+    // 这主要在于我们所谓的类模板分文件，其实类模板定义还是在头文件中，只不过成员函数定义在cpp罢了。
+}
+```
+
+[**`test_function_template.h`**](/code/04显式实例化解决模板分文件问题/test_function_template.cpp)
+
+```cpp
+#pragma once
+
+#include <iostream>
+#include <typeinfo>
+
+template<typename T>
+void f_t(T);
+```
+
+[**`test_function_template.cpp`**](/code/04显式实例化解决模板分文件问题/test_function_template.cpp)
+
+```cpp
+#include"test_function_template.h"
+
+template<typename T>
+void f_t(T) { std::cout << typeid(T).name() << '\n'; }
+
+template void f_t<int>(int); // 显式实例化定义 实例化 f_t<int>(int)
+template void f_t<>(char);   // 显式实例化定义 实例化 f_t<char>(char)，推导出模板实参
+template void f_t(double);   // 显式实例化定义 实例化 f_t<double>(double)，推导出模板实参
+```
+
+[**`test_class_template.h`**](/code/04显式实例化解决模板分文件问题/test_class_template.h)
+
+```cpp
+#pragma once
+
+#include <iostream>
+#include <typeinfo>
+
+namespace N {
+
+    template<typename T>
+    struct X {
+        void f();
+    };
+
+};
+```
+
+[**`test_class_template.cpp`**](/code/04显式实例化解决模板分文件问题/test_class_template.cpp)
+
+```cpp
+#include "test_class_template.h"
+
+template<typename T>
+void N::X<T>::f(){
+    std::cout << "f: " << typeid(T).name() << '\n';
+}
+
+template void N::X<int>::f();    // 显式实例化定义 成员函数，这不是显式实例化类模板
+```
+
+&emsp;&emsp;值得一提的是，我们前面讲类模板的时候说了类模板的成员函数不是函数模板，但是这个语法形式很像前面的“*函数模板显式实例化*”对不对？的确看起来差不多，不过**这是显式实例化成员函数**，而不是函数模板。
+
+上面的 `f` 是定义，但是别把它当成函数模板了，那个 `template<typename T>` 是属于类模板的。
