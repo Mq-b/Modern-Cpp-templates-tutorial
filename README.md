@@ -8,7 +8,7 @@
 
 [github-sub-title:img]: https://readme-typing-svg.herokuapp.com?font=Segoe+Script&center=true&lines=Modern+Cpp+template;
 
-本仓库用来存放 B 站课程 [《现代 C++ 模板教程 2024》]()的教案以及代码。
+本仓库用来存放 B 站课程 [《现代 C++ 模板教程 2024》]()的教案、代码，和**作业**。
 
 任何组织和个人遵守 [MIT](LICENSE) 协议即可随意使用。
 
@@ -18,7 +18,9 @@
 
 ---
 
-&emsp;&emsp;国内众多 C++ 教程古老且过时，学校教学则更是过分。我们需要新式的，教学符合时代的知识、代码风格、思维的课程。
+&emsp;&emsp;国内众多 C++ 教程古老且过时，学校教学则更是过分。我们需要新式的，教学符合时代的知识、代码风格、思维的课程！
+
+&emsp;&emsp;本教程创新性的采用学习 + [提交作业](/homework/README.md)的方式，您需要视频学习后提交作业，而我们会进行批改和评论。
 
 &emsp;&emsp;本教程假设读者的最低水平为：`C + class + STL`。
 
