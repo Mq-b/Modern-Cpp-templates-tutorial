@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "生成动态库", "..\生�
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "生成静态库", "..\生成静态库\生成静态库.vcxproj", "{6403154D-05BB-4F71-BC0F-A06DF3C7EAFB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "测试使用静态库", "..\测试使用静态库\测试使用静态库.vcxproj", "{3A7ECD3D-612F-4ACF-981C-F068D2D7673C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{6403154D-05BB-4F71-BC0F-A06DF3C7EAFB}.Release|x64.Build.0 = Release|x64
 		{6403154D-05BB-4F71-BC0F-A06DF3C7EAFB}.Release|x86.ActiveCfg = Release|Win32
 		{6403154D-05BB-4F71-BC0F-A06DF3C7EAFB}.Release|x86.Build.0 = Release|Win32
+		{3A7ECD3D-612F-4ACF-981C-F068D2D7673C}.Debug|x64.ActiveCfg = Debug|x64
+		{3A7ECD3D-612F-4ACF-981C-F068D2D7673C}.Debug|x64.Build.0 = Debug|x64
+		{3A7ECD3D-612F-4ACF-981C-F068D2D7673C}.Debug|x86.ActiveCfg = Debug|Win32
+		{3A7ECD3D-612F-4ACF-981C-F068D2D7673C}.Debug|x86.Build.0 = Debug|Win32
+		{3A7ECD3D-612F-4ACF-981C-F068D2D7673C}.Release|x64.ActiveCfg = Release|x64
+		{3A7ECD3D-612F-4ACF-981C-F068D2D7673C}.Release|x64.Build.0 = Release|x64
+		{3A7ECD3D-612F-4ACF-981C-F068D2D7673C}.Release|x86.ActiveCfg = Release|Win32
+		{3A7ECD3D-612F-4ACF-981C-F068D2D7673C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
