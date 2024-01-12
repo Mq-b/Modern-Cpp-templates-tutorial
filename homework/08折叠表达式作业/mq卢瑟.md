@@ -43,9 +43,20 @@ std::vector<double> Reverse(double && args0, int && args1)
 }
 ```
 
-又因为 loserhomework 的卢瑟日经 [内建赋值运算符求值问题](https://github.com/Mq-b/Loser-HomeWork/blob/main/src/%E5%8D%A2%E7%91%9F%E6%97%A5%E7%BB%8F/%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6%E6%B1%82%E5%80%BC%E9%A1%BA%E5%BA%8F%E9%97%AE%E9%A2%98.md) 中提到的：
+> 注：这里的 `tmp` 纯属是为了创造一个符合语法的折叠表达式展开效果，它本身并没有什么其他意义。
+
+根据：  
+loserhomework 的卢瑟日经 [赋值运算符求值问题](https://github.com/Mq-b/Loser-HomeWork/blob/main/src/%E5%8D%A2%E7%91%9F%E6%97%A5%E7%BB%8F/%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6%E6%B1%82%E5%80%BC%E9%A1%BA%E5%BA%8F%E9%97%AE%E9%A2%98.md) 中提到的： 
 > 每个简单赋值表达式 E1 = E2 和每个复合赋值表达式 E1 @= E2 中，E2 的每个值计算和副作用都按顺序早于 E1 的每个值计算和副作用。
 
-因此， args1 会先被 push_back 到 res 这个容器中，所以容器中的元素顺序是：3 , 1.1。
+`(tmp = (res.push_back(args0) , false)) = (res.push_back(args1) , false);` 这条语句可以看成是 E1 = E2 类型的赋值表达式。其中：  
+E1 是 `(tmp = (res.push_back(args0) , false))`  
+E2 是 `(res.push_back(args1) , false)`   
+因此 E2 ： `(res.push_back(args1) , false)` 先被计算。  
+> 注意，这是一个逗号表达式，根据"逗号表达式是从左往右执行的，返回最右边的值作为整个逗号表达式的值"，所以 args1 会先被 push_back 到 res 这个容器中，然后返回 false 。
 
-***所以该函数是将传入的参数进行逆序***
+对于 E1 ： `(tmp = (res.push_back(args0) , false))` ，它也可以看成是 E1 = E2 类型的赋值表达式，同上。
+
+所以容器中的元素顺序是：3 , 1.1。
+
+***所以该函数是将传入的参数进行逆序。***
