@@ -191,7 +191,7 @@ array(T t, Args...) -> array<T, sizeof...(Args) + 1>;
 
 如果不使用 SFINAE 约束，那么 array 的类型完全取决于第一个参数的类型，很容易导致其他问题。
 
-## `std::void_t`
+### `std::void_t`
 
 ```cpp
 template< class... >
