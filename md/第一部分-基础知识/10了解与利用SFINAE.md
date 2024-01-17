@@ -82,7 +82,7 @@ template<
 
 这节内容非常重要，提到的概念和代码需要全部掌握，后面的内容其实无非都是以本节为基础的变种、各种使用示例、利用标准库的设施让写法简单一点，但是根本的原理，就是本节讲的。
 
-## 使用示例
+## 基础使用示例
 
 *请在完全读懂上一节内容再阅读本节内容*。
 
@@ -120,9 +120,76 @@ auto add(const T& t1, const T& t2) -> decltype(t1 + t2){   // C++11 后置返回
 
 但是令人诟病的是 SFINAE 的写法在很多时候非常麻烦，目前各位可能还是没有感觉，后面的需求，写出的示例，慢慢的你就会感觉到了。这些问题会在下一章的[约束与概念](/md/第一部分-基础知识/11约束与概念.md)解决。
 
+## 标准库支持
+
+标准库提供了一些设施帮助我们更好的使用 SFINAE。
+
+### `std::enable_if`
+
+```cpp
+template<bool B, class T = void>
+struct enable_if {};
+ 
+template<class T>
+struct enable_if<true, T> { typedef T type; };     // 只有 B 为 true，才有 type，即 ::type 才合法
+
+template< bool B, class T = void >
+using enable_if_t = typename enable_if<B,T>::type; // C++14 引入
+```
+
+这是一个模板类，在 C++11 引入，它的用法很简单，就是第一个模板参数为 true，此模板类就有 `type`，不然就没有，以此进行 SFINAE。
+
+```cpp
+template<typename T,typename SFINAE = 
+    std::enable_if_t<std::is_same_v<T,int>>>
+void f(T){}
+```
+
+函数 `f` 要求 `T` 类型必须是 `int` 类型；我们一步一步分析
+
+`std::enable_if_t<std::is_same_v<T,int>>>` 如果 T 不是 int，那么 [std::is_same_v](https://zh.cppreference.com/w/cpp/types/is_same) 就会返回一个 false，也就是说 `std::enable_if_t<false>` ，带入：
+
+```cpp
+using enable_if_t = typename enable_if<false,void>::type; // void 是默认模板实参
+```
+
+但是问题在于：
+
+- **enable_if 如果第一个模板参数为 `false`，它根本没有 `type` 成员**。
+
+所以这里是个**代换失败**，但是因为“*代换失败不是错误*”，所以只是不选择函数模板 `f`，而不会导致编译错误。
+
 ---
 
+再谈 std::enable_if 的默认模板实参是 **`void`**，通常如果我们不在乎这个类型，就让它默认就行，比如我们的示例 `f` 根本不在乎第二个模板实参是啥类型。
 
+```cpp
+template <class Type, class... Args>
+array(Type, Args...) -> array<std::enable_if_t<(std::is_same_v<Type, Args> && ...), Type>, sizeof...(Args) + 1>;
+```
+
+以上示例，是显式指明了 std::enable_if 的第二个模板实参。
+
+它是我们[类模板](02类模板.md)推导指引那一节的示例的改进版本，我们使用 std::enable_if_t 与 C++17 折叠表达式，为它增加了约束，这几乎和 libstdc++ 中的代码一样。
+
+`(std::is_same_v<Type, Args> && ...)` 做 std::enable_if 的第一个模板实参，这里是一个二元右叠，使用了 **`&&`** 运算符，也就是必须 std::is_same_v 全部为 true，才会是 true。简单的说就是要求类型形参包 Args 中的每一个类型全部都是一样的，不然就是替换失败。
+
+这样做有很多好处，老式写法存在很多问题：
+
+```cpp
+template<class Ty, std::size_t size>
+struct array {
+    Ty arr[size];
+};
+
+template<typename T, typename ...Args>
+array(T t, Args...) -> array<T, sizeof...(Args) + 1>;
+
+::array arr{1.4, 2, 3, 4, 5};        // 被推导为 array<double,5>
+::array arr2{1, 2.3, 3.4, 4.5, 5.6}; // 被推导为 array<int,5>    有数据截断
+```
+
+如果不使用 SFINAE 约束，那么 array 的类型完全取决于第一个参数的类型，很容易导致其他问题。
 
 [^1]: 注：“[重载决议](https://zh.cppreference.com/w/cpp/language/overload_resolution)”，简单来说，一个函数被重载，编译器必须决定要调用哪个重载，我们决定调用的是各形参与各实参之间的匹配最紧密的重载。
 
