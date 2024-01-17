@@ -191,6 +191,86 @@ array(T t, Args...) -> array<T, sizeof...(Args) + 1>;
 
 如果不使用 SFINAE 约束，那么 array 的类型完全取决于第一个参数的类型，很容易导致其他问题。
 
+## `std::void_t`
+
+```cpp
+template< class... >
+using void_t = void;
+```
+
+如你所见，它的实现非常非常的简单，就是一个别名，接受任意个数的类型参数，但自身始终是 `void` 类型。
+
+- 将任意类型的序列映射到类型 void 的工具元函数。
+
+- 模板元编程中，用此元函数检测 SFINAE 语境中的非良构类型[^2]。
+
+---
+
+> *我要写一个函数模板 `add`，我要求传入的对象需要支持 `+` 以及它需要有别名 `type` ，成员 `value`、`f`*。
+
+```cpp
+#include <iostream>
+#include <type_traits>
+
+template<typename T,
+    typename SFINAE = std::void_t<
+    decltype(T{} + T{}), typename T::type, decltype(&T::value), decltype(&T::f) >>
+auto add(const T& t1, const T& t2) {
+    std::puts("SFINAE + | typename T::type | T::value");
+    return t1 + t2;
+}
+
+struct Test {
+    int operator+(const Test& t)const {
+        return this->value + t.value;
+    }
+    void f()const{}
+    using type = void;
+    int value;
+};
+
+int main() {
+    Test t{ 1 }, t2{ 2 };
+    add(t, t2);  // OK
+    //add(1, 2); // 未找到匹配的重载函数
+}
+```
+
+- `decltype(T{} + T{})` 用 decltype 套起来只是为了获得类型符合语法罢了，std::void_t 只接受类型参数。如果类型没有 `operator+`，自然是*代换失败*。
+
+- `typename T::type` 使用 `typename` 是因为[待决名](09待决名.md)；type 本身是类型，不需要 decltype。如果 `add` 推导的类型没有 `type` 别名，自然是*代换失败*。
+
+- `decltype(&T::value)` 用 decltype 套就不用说了，`&T::value` 是[成员指针](https://zh.cppreference.com/w/cpp/language/pointer#.E6.88.90.E5.91.98.E6.8C.87.E9.92.88)的语法，不区分是数据成员还是成员函数，如果有这个成员 `value`，`&类名::成员名字` 自然合法，要是没有，就是*代换失败*。
+
+- `decltype(&T::f)` ，其实前面已经说了，成员函数是没区别的，没有成员 `f` 就是 *代换失败*。
+
+总而言之，这是为了使用 SFINAE。
+
+> 那么这里 `std::void_t` 的作用是？
+
+其实倒也没啥，无非就是给了个好的语境，让我们能这样写，最终 `typename SFINAE = std::void_t` 这里的 `SFINAE` 的类型就是 `void`；当然了，这不重要，重要的是创造这样写的语境，能够方便我们进行 **`SFINAE`**。
+
+仅此一个示例，我相信就足够展示 `std::void_t` 的使用了。
+
+> *那么如果在 C++17 标准之前，没有 std::void_t ，我该如何要求类型有某些成员呢？*
+
+其实形式和原理都是一样的。
+
+```cpp
+template<typename T,typename SFINAE = decltype(&T::f)>
+void f(T){}
+
+struct Test {
+    void f()const{}
+};
+
+Test t;
+f(t);  // OK
+f(1);  // 未找到匹配的重载函数
+```
+
+C++11 可用。
+
 [^1]: 注：“[重载决议](https://zh.cppreference.com/w/cpp/language/overload_resolution)”，简单来说，一个函数被重载，编译器必须决定要调用哪个重载，我们决定调用的是各形参与各实参之间的匹配最紧密的重载。
 
 [^2]: 注：[非良构（ill-formed）](https://zh.cppreference.com/w/cpp/language/ub)——程序拥有语法错误或可诊断的语义错误。遵从标准的 C++ 编译器必须为此给出诊断
