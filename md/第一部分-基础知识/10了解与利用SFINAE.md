@@ -273,11 +273,40 @@ f(1);  // 未找到匹配的重载函数
 
 C++11 可用。
 
+## 部分（偏）特化中的 SFINAE
+
+在确定一个类或变量 (C++14 起)模板的特化是由部分特化还是主模板生成的时候也会出现推导与替换。在这种确定期间，**部分特化的替换失败不会被当作硬错误，而是像函数模板一样*代换失败不是错误*，只是忽略这个部分特化**。
+
+```cpp
+#include <iostream>
+
+template<typename T,typename T2 = void>
+struct X{
+    static void f() { std::puts("主模板"); }
+};
+
+template<typename T>
+struct X<T, std::void_t<typename T::type>>{
+    using type = typename T::type;
+    static void f() { std::puts("偏特化 T::type"); }
+};
+
+struct Test { using type = int; };
+struct Test2 { };
+
+int main(){
+    X<Test>::f();       // 偏特化 T::type
+    X<Test2>::f();      // 主模板
+}
+```
+
 ## 总结
 
 到此，其实就足够了，SFINAE 的原理、使用、标准库支持（std::enable_if、std::void_t）。
 
 虽然称不上全部，但如果你能完全理解明白本节的所有内容，那你一定超越了至少 95% C++ 开发者。其他的各种形式无非都是这样类似的，因为我们已经为你讲清楚了 ***原理***。
+
+- ***代换失败不是错误***。
 
 [^1]: 注：“[重载决议](https://zh.cppreference.com/w/cpp/language/overload_resolution)”，简单来说，一个函数被重载，编译器必须决定要调用哪个重载，我们决定调用的是各形参与各实参之间的匹配最紧密的重载。
 
