@@ -273,6 +273,64 @@ f(1);  // 未找到匹配的重载函数
 
 C++11 可用。
 
+### `std::declval`
+
+```cpp
+template<class T>
+typename std::add_rvalue_reference<T>::type declval() noexcept;
+```
+
+将任意类型 T 转换成引用类型，*使得在 decltype 说明符的操作数中不必经过构造函数就能使用成员函数*。
+
+- [std::declval](https://zh.cppreference.com/w/cpp/utility/declval) 只能用于 **[不求值语境](https://zh.cppreference.com/w/cpp/language/expressions#.E6.BD.9C.E5.9C.A8.E6.B1.82.E5.80.BC.E8.A1.A8.E8.BE.BE.E5.BC.8F)**，且不要求有定义。
+
+- **它不能被实际调用，因此不会返回值，返回类型是 `T&&`**。
+
+它常常用于模板元编程 SFINAE 的工具库，我们用一个示例展现它的必要性：
+
+```cpp
+template<typename T, typename SFINAE = std::void_t<decltype(T{} + T{})> >
+auto add(const T& t1, const T& t2) {
+    std::puts("SFINAE +");
+    return t1 + t2;
+}
+
+struct X{
+    int operator+(const X&)const{
+        return 0;
+    }
+};
+
+struct X2 {
+    X2(int){}   // 有参构造，没有默认构造函数
+    int operator+(const X&)const {
+        return 0;
+    }
+};
+
+int main(){
+    X x1, x2;
+    add(x1, x2);          // OK
+
+    X2 x3{ 0 }, x4{ 0 };
+    add(x3,x4);           // 未找到匹配的重载函数
+}
+```
+
+错误的原因很简单，`decltype(T{} + T{})` 这个表达式中，同时**要求了 `T` 类型支持默认构造**（虽然这不是我们的本意），然而我们的 `X2` 类型没有默认构造，自然而然 `T{}` 不是合法表达式，*代换失败*。其实我们之前也有类似的写法，我们在本节进行纠正，使用 `std::declval`：
+
+```cpp
+template<typename T, typename SFINAE = std::void_t<decltype(std::declval<T>() + std::declval<T>())> >
+auto add(const T& t1, const T& t2) {
+    std::puts("SFINAE +");
+    return t1 + t2;
+}
+```
+
+[测试](https://godbolt.org/z/7GGWvd5PM)。
+
+把 `T{}` 改成 `std::declval<T>()` 即可，decltype 是不求值语境，没有问题。
+
 ## 部分（偏）特化中的 SFINAE
 
 在确定一个类或变量 (C++14 起)模板的特化是由部分特化还是主模板生成的时候也会出现推导与替换。在这种确定期间，**部分特化的替换失败不会被当作硬错误，而是像函数模板一样*代换失败不是错误*，只是忽略这个部分特化**。
@@ -302,7 +360,7 @@ int main(){
 
 ## 总结
 
-到此，其实就足够了，SFINAE 的原理、使用、标准库支持（std::enable_if、std::void_t）。
+到此，其实就足够了，SFINAE 的原理、使用、标准库支持（std::enable_if、std::void_t、std::declval）。
 
 虽然称不上全部，但如果你能完全理解明白本节的所有内容，那你一定超越了至少 95% C++ 开发者。其他的各种形式无非都是这样类似的，因为我们已经为你讲清楚了 ***原理***。
 
