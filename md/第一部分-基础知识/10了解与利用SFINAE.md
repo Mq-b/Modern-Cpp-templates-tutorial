@@ -286,7 +286,7 @@ typename std::add_rvalue_reference<T>::type declval() noexcept;
 
 - **它不能被实际调用，因此不会返回值，返回类型是 `T&&`**。
 
-它常常用于模板元编程 SFINAE 的工具库，我们用一个示例展现它的必要性：
+它常用于模板元编程 SFINAE，我们用一个示例展现它的必要性：
 
 ```cpp
 template<typename T, typename SFINAE = std::void_t<decltype(T{} + T{})> >
