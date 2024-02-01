@@ -1,7 +1,6 @@
 #include "export_template.h"
 #include <string>
 
-#pragma comment(lib, "生成静态库.lib")
 
 int main(){
     std::string s;
