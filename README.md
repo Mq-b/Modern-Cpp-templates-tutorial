@@ -8,7 +8,7 @@
 
 [github-sub-title:img]: https://readme-typing-svg.herokuapp.com?font=Segoe+Script&center=true&lines=Modern+Cpp+template;
 
-本仓库用来存放 B 站课程 [《现代 C++ 模板教程 2024》]()的教案、代码，和**作业**。
+本仓库用来存放 B 站课程 [**《现代 C++ 模板教程 2024》**](https://b23.tv/Ppq4Bsw)的教案、代码，和**作业**。
 
 任何组织和个人遵守 [CC BY-NC-ND 4.0 DEED](LICENSE) 协议即可随意使用。
 
