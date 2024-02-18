@@ -305,7 +305,7 @@ struct X{
 
 struct X2 {
     X2(int){}   // 有参构造，没有默认构造函数
-    int operator+(const X&)const {
+    int operator+(const X2&)const {
         return 0;
     }
 };
