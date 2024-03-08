@@ -370,4 +370,4 @@ int main(){
 
 [^1]: 注：“[重载决议](https://zh.cppreference.com/w/cpp/language/overload_resolution)”，简单来说，一个函数被重载，编译器必须决定要调用哪个重载，我们决定调用的是各形参与各实参之间的匹配最紧密的重载。
 
-[^2]: 注：[非良构（ill-formed）](https://zh.cppreference.com/w/cpp/language/ub)——程序拥有语法错误或可诊断的语义错误。遵从标准的 C++ 编译器必须为此给出诊断
+[^2]: 注：[非良构（ill-formed）](https://zh.cppreference.com/w/cpp/language/ub)——程序拥有语法错误或可诊断的语义错误。遵从标准的 C++ 编译器必须为此给出诊断。
