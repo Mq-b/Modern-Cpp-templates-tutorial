@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 const tutorial_path = '/md/第一部分-基础知识/';
 const homework_path = '/homework/08折叠表达式作业/';
+const repo_url = 'https://github.com/Mq-b/Modern-Cpp-templates-tutorial';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -40,17 +41,17 @@ export default defineConfig({
               { text: 'ooolize', link: homework_path + 'ooolize' },
             ]
           },
-          { text: '总结', link: '/md/第一部分-基础知识/12总结' },
+          { text: '总结', link: tutorial_path + '12总结' },
         ]
       },
     ],
     returnToTopLabel: '回到顶端',
     editLink: {
-      pattern: 'https://github.com/Mq-b/Modern-Cpp-templates-tutorial',
+      pattern: repo_url,
       text: '在 GitHub 上编辑此页面'
     },
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/Mq-b/Modern-Cpp-templates-tutorial' },
+      { icon: 'github', link: repo_url },
     ]
   }
 })
