@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="支付宝10.jpg" width=256px alt="cpp"/>
+<img src="./支付宝10.jpg" width=256px alt="cpp"/>
 
-<img src="支付宝20.jpg" width=256px alt="cpp"/>
+<img src="./支付宝20.jpg" width=256px alt="cpp"/>
 
-<img src="支付宝88.88.jpg" width=256px alt="cpp"/>
+<img src="./支付宝88.88.jpg" width=256px alt="cpp"/>
 
 </div>
 
