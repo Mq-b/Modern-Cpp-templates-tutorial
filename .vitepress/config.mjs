@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitepress'
+import { defineConfig } from 'vitepress';
 import { repo_url } from './theme/params';
 
 const tutorial_path = '/md/第一部分-基础知识/';
@@ -7,18 +7,15 @@ const homework_path = '/homework/08折叠表达式作业/';
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "现代 C++ 模板教程",
-  rewrites: {
-    'README.md': 'index.md'
-  },
+  head: [['link', { rel: 'icon', href: '/image/icon.webp'}]],
   cleanUrls: true,
+  rewrites: { 'README.md': 'index.md' },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-    logo: '/image/icon.webp',
-    base: '/Modern-Cpp-templates-tutorial/',
     sidebar: [
       {
         items: [
-          { text: '首页', link: '/README' },
+          { text: '首页', link: '/' },
           { text: '阅读须知', link: '/md/README' },
           { text: '函数模板', link: tutorial_path + '01函数模板' },
           { text: '类模板', link: tutorial_path + '02类模板' },
@@ -46,6 +43,8 @@ export default defineConfig({
         ]
       },
     ],
+    logo: '/image/icon.webp',
+    base: '/Modern-Cpp-templates-tutorial/',
     outline: {
       label: '页面导航'
     },
