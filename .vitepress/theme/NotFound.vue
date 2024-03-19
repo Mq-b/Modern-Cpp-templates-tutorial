@@ -16,8 +16,7 @@ data.page.value.title = '跳转 GitHub 中...';
 
 const router = useRouter();
 const to = repo_url + 'blob/main' + router.route.path;
-if (router.route.data.isNotFound)
-    location.replace(to);
+location.replace(to);
 </script>
 
 <style scoped>
