@@ -1,21 +1,20 @@
 <template>
-    <!-- <div style="display: flex; justify-content: center;"> -->
     <div class="container">
         <div class="head">跳转 GitHub 中...</div>
         <p>{{ decodeURI(to) }}</p>
     </div>
-    <!-- </div> -->
 </template>
 
 <script setup>
 import { useRouter, useData } from 'vitepress';
-import { repo_url } from './params';
+import { repo_name, repo_url } from './params';
 
 const data = useData();
 data.page.value.title = '跳转 GitHub 中...';
 
 const router = useRouter();
-const to = repo_url + 'blob/main' + router.route.path;
+const to = repo_url + 'blob/main' + router.route.path.substring(repo_name.length);
+console.log(to);
 location.replace(to);
 </script>
 

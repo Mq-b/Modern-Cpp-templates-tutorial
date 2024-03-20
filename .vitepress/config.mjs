@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress';
-import { repo_url } from './theme/params';
+import { repo_name, repo_url } from './theme/params';
+import footnote_plugin from 'markdown-it-footnote';
 
 const tutorial_path = '/md/第一部分-基础知识/';
 const homework_path = '/homework/08折叠表达式作业/';
@@ -7,9 +8,9 @@ const homework_path = '/homework/08折叠表达式作业/';
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "现代 C++ 模板教程",
-  head: [['link', { rel: 'icon', href: '/image/icon.webp'}]],
-  cleanUrls: true,
+  head: [['link', { rel: 'icon', href: repo_name + '/icon.webp' }]],
   rewrites: { 'README.md': 'index.md' },
+  base: repo_name + '/',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     sidebar: [
@@ -43,18 +44,22 @@ export default defineConfig({
         ]
       },
     ],
-    logo: '/image/icon.webp',
-    base: '/Modern-Cpp-templates-tutorial/',
-    outline: {
-      label: '页面导航'
-    },
-    returnToTopLabel: '回到顶端',
+    logo: '/icon.webp',
     editLink: {
       pattern: repo_url + 'blob/main/:path',
       text: '在 GitHub 上编辑此页面'
     },
-    socialLinks: [
-      { icon: 'github', link: repo_url },
-    ]
-  }
+    socialLinks: [{ icon: 'github', link: repo_url }],
+
+    outline: { label: '页面导航' },
+    returnToTopLabel: '回到顶端',
+  },
+  markdown: {
+    config(md) {
+      md.use(footnote_plugin);
+    }
+  },
+
+  cleanUrls: true,
+  ignoreDeadLinks: true,
 })
