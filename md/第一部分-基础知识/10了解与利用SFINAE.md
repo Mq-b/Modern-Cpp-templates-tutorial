@@ -174,7 +174,7 @@ array(Type, Args...) -> array<std::enable_if_t<(std::is_same_v<Type, Args> && ..
 
 以上示例，是显式指明了 std::enable_if 的第二个模板实参，为 `Type`。
 
-它是我们[类模板](02类模板.md)推导指引那一节的示例的**改进版本**，我们使用 std::enable_if_t 与 C++17 折叠表达式，为它增加了约束，这几乎和 [libstdc++](https://github.com/gcc-mirror/gcc/blob/master/libstdc%2B%2B-v3/include/std/array#L292-L295) 中的代码一样。
+它是我们[类模板](02类模板.md)推导指引那一节的示例的**改进版本**，我们使用 std::enable_if_t 与 C++17 折叠表达式，为它增加了约束，这几乎和 [libstdc++](https://github.com/gcc-mirror/gcc/blob/7a01cc711f33530436712a5bfd18f8457a68ea1f/libstdc%2B%2B-v3/include/std/array#L292-L295) 中的代码一样。
 
 `(std::is_same_v<Type, Args> && ...)` 做 std::enable_if 的第一个模板实参，这里是一个一元右折叠，使用了 **`&&`** 运算符，也就是必须 std::is_same_v 全部为 true，才会是 true。简单的说就是要求类型形参包 Args 中的每一个类型全部都是一样的，不然就是替换失败。
 

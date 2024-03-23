@@ -1,12 +1,12 @@
 <div align="center">
 
-<a herf="https://zh.cppreference.com/w/cpp"><img src="/image/icon.webp" width=512px alt="cpp"/></a>
+<a herf="https://zh.cppreference.com/w/cpp"><img src="./image/icon.webp" width=512px alt="cpp"/></a>
 
 # 现代 C++ 模板教程
 
 本仓库用来存放 B 站课程 [**《现代 C++ 模板教程 2024》**](https://b23.tv/Ppq4Bsw)的教案、代码，和**作业**。
 
-任何组织和个人遵守 [CC BY-NC-ND 4.0 DEED](LICENSE) 协议即可随意使用。
+任何组织和个人遵守 [CC BY-NC-ND 4.0](LICENSE) 协议即可随意使用。
 
 [捐赠](/image/捐赠)、issues、pr 均会在致谢列表中铭记您的贡献。
 
