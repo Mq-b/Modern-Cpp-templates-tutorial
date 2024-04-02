@@ -51,8 +51,17 @@ export default defineConfig({
     },
     socialLinks: [{ icon: 'github', link: repo_url }],
 
-    search: { provider: 'local' },
+    search: { 
+      provider: 'local',
+      options: {
+        detailedView: true,
+      }
+    },
     outline: { label: '页面导航' },
+    docFooter: {
+      prev: '上一页',
+      next: '下一页'
+    },
     returnToTopLabel: '回到顶端',
   },
   markdown: {
