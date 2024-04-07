@@ -100,7 +100,7 @@ int main(){
 
 > [测试代码](https://godbolt.org/z/aT78bbWaz)。
 
-和 `std::thread` 一样，上面代码无法通过编译，”*`invoke` 未找到匹配的重载函数*“。原因很简单，我们上面的代码展示了，最终的 `invoke` 调用是用了 `std::move` 的，转换为右值表达式，自然不行了。
+和 `std::thread` 一样，上面代码无法通过编译，”*`invoke` 未找到匹配的重载函数*“。原因很简单，我们上面的代码展示了，最终的 `invoke` 调用是用了 `std::move` 的，参数被转换为右值表达式，形参类型是左值引用，左值引用不能引用右值表达式自然不行了。
 
 ```cpp
 void func(const int& a){
@@ -116,7 +116,7 @@ int main(){
 
 > [测试代码](https://godbolt.org/z/qTPofrW6z)。
 
-我们还可以将 `func` 的形参类型改为 `const int&` ，这可以通过编译，当然了，**地址不同**。原因也很简单，我们说了，智能指针**存储的是副本**，元组类型是使用 [`std::decay_t`](https://zh.cppreference.com/w/cpp/types/decay) 删除了 CV 与引用限定的。
+我们还可以将 `func` 的形参类型改为 `const int&` ，这可以通过编译，因为 `const int&` 可以引用右值表达式。当然了，打印的**地址不同**。原因也很简单，我们说了，智能指针**存储的是参数副本**，元组类型是使用 [`std::decay_t`](https://zh.cppreference.com/w/cpp/types/decay) 删除了 CV 与引用限定的。
 
 ```cpp
 void func(const int& a){
