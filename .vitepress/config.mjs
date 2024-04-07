@@ -3,6 +3,7 @@ import { repo_name, repo_url } from './theme/params';
 import footnote_plugin from 'markdown-it-footnote';
 
 const tutorial_path = '/md/第一部分-基础知识/';
+const tutorial2_path = '/md/第二部分-造轮子/';
 const homework_path = '/homework/08折叠表达式作业/';
 
 // https://vitepress.dev/reference/site-config
@@ -38,6 +39,13 @@ export default defineConfig({
               { text: 'mq日', link: homework_path + 'mq日' },
               { text: 'saidfljwnzjasf', link: homework_path + 'saidfljwnzjasf' },
               { text: 'ooolize', link: homework_path + 'ooolize' },
+            ]
+          },
+          {
+            text: '造轮子',
+            collapsed: true,
+            items: [
+              { text: '使用模板包装C风格API进行调用', link: tutorial2_path + '使用模板包装C风格API进行调用' },
             ]
           },
           { text: '总结', link: tutorial_path + '12总结' },
