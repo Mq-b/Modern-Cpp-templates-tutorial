@@ -136,4 +136,4 @@ int main(){
 
 ## 总结
 
-如果感受到难度，重新细读[**`std::thread` 的构造-源码解析**](https://github.com/Mq-b/ModernCpp-ConcurrentProgramming-Tutorial/blob/main/md/%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90/01thread%E7%9A%84%E6%9E%84%E9%80%A0%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90.md) ，或者学习模板，推荐学习：[**现代C++模板教程**](https://github.com/Mq-b/Modern-Cpp-templates-tutorial)。
+如果感受到难度，重新细读[**`std::thread` 的构造-源码解析**](https://github.com/Mq-b/ModernCpp-ConcurrentProgramming-Tutorial/blob/main/md/%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90/01thread%E7%9A%84%E6%9E%84%E9%80%A0%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90.md) ，或者再把[**第一部分-基础初始**](../第一部分-基础知识/)知识好好学习。
