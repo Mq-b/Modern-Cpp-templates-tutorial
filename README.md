@@ -8,7 +8,7 @@
 
 任何组织和个人遵守 [CC BY-NC-ND 4.0](LICENSE) 协议即可随意使用。
 
-[捐赠](/image/捐赠)、issues、pr 均会在 **[致谢列表]()中铭记您的贡献**。
+[捐赠](/image/捐赠)、issues、pr 均会在 **[致谢列表](/image/捐赠/thanks.md)中铭记您的贡献**。
 
 </div>
 
