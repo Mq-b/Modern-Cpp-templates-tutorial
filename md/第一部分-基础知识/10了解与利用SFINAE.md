@@ -333,6 +333,70 @@ auto add(const T& t1, const T& t2) {
 
 把 `T{}` 改成 `std::declval<T>()` 即可，decltype 是不求值语境，没有问题。
 
+---
+
+还不止如此，使用它得以让我们先前的 `SFINAE` 检查类型是否有某些成员的形式得以改进，而不是像之前一样的  `decltype(&T::value), decltype(&T::f)` 的利用成员指针的形式。
+
+```cpp
+template<typename T,typename SFINAE = decltype(std::declval<T>().f(1))>
+void f(int) { std::puts("f int"); }
+
+template<typename T, typename SFINAE = decltype(std::declval<T>().f())>
+void f(double) { std::puts("f"); }
+
+struct X{
+    void f()const{}
+};
+struct Y{
+    void f(int)const{}
+};
+
+int main(){
+    f<X>(1);
+    f<Y>(1.1);
+}
+```
+
+[**运行结果**](https://godbolt.org/z/vvdWKKM5n)：
+
+```txt
+f
+f int
+```
+
+显而易见，虽然我们的 `f<X>(1)` 传递的参数是 int 类型，但是却打印了 `f`，也就是代表实际匹配到了参数为 `f(double)` 的版本，这是因为我们的 `f(int)` 版本的 `SFINAE` 约束要求了类型必须是支持 `f(1)` 这种形式，`X` 的成员函数 `f` 是空参的，自然不满足。
+
+**使用此种方式得以更加明确的约束，因为不管成员函数 f 的形参是什么情况，其成员指针表示形式都是：`&类名::f`。**
+
+数据成员同样可以使用 `declval` 进行约束：
+
+```cpp
+template<typename T, typename SFINAE = decltype(std::declval<T>().value)>
+void f(int) { std::puts("f value"); }
+
+template<typename T>
+void f(double) { std::puts("f"); }
+
+struct X {
+    int value{};
+};
+struct Y {};
+
+int main() {
+    f<X>(1); // f value
+    f<Y>(1); // f
+}
+```
+
+[**运行结果**](https://godbolt.org/z/c3ahK1WxP)：
+
+```txt
+f value
+f
+```
+
+`f<Y>(1)`  虽然传递的参数是 int 类型，但是因为 `Y` 不满足 `SFINAE` 的约束，即没有成员 `value`，所以只能选择到 `f(double)` 的版本。
+
 ## 部分（偏）特化中的 SFINAE
 
 在确定一个类或变量 (C++14 起)模板的特化是由部分特化还是主模板生成的时候也会出现推导与替换。在这种确定期间，**部分特化的替换失败不会被当作硬错误，而是像函数模板一样*代换失败不是错误*，只是忽略这个部分特化**。
