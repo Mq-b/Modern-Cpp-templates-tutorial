@@ -4,6 +4,7 @@ import footnote_plugin from 'markdown-it-footnote';
 
 const tutorial_path = '/md/第一部分-基础知识/';
 const tutorial2_path = '/md/第二部分-造轮子/';
+const tutorial3_path = '/md/扩展知识/';
 const homework_path = '/homework/08折叠表达式作业/';
 
 // https://vitepress.dev/reference/site-config
@@ -39,6 +40,13 @@ export default defineConfig({
               { text: 'mq日', link: homework_path + 'mq日' },
               { text: 'saidfljwnzjasf', link: homework_path + 'saidfljwnzjasf' },
               { text: 'ooolize', link: homework_path + 'ooolize' },
+            ]
+          },
+          {
+            text: '扩展知识',
+            collapsed: true,
+            items: [
+              {text: `CRTP的原理与使用`, link: tutorial3_path + `CRTP的原理与使用` },
             ]
           },
           {

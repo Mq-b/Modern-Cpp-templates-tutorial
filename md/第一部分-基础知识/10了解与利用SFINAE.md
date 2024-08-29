@@ -165,14 +165,41 @@ using enable_if_t = typename enable_if<false,void>::type; // void 是默认模�
 
 ---
 
-再谈，std::enable_if 的默认模板实参是 **`void`**，如果我们不在乎 std::enable_if 得到的类型，就让它默认就行，比如我们的示例 `f` 根本不在乎第二个模板形参 `SFINAE` 是啥类型。
+再谈，`std::enable_if` 的默认模板实参是 **`void`**，如果我们不在乎 `std::enable_if` 得到的类型，就让它默认就行，比如我们先前的示例 `f` 根本不在乎第二个模板形参 `SFINAE` 是啥类型。
+
+此外，`std::enable_if` 还有一种常见的用法，即利用其第二个模板参数而不声明额外的模板类型参数。例如：
+
+```cpp
+template<typename T,
+    std::enable_if_t<std::is_same_v<T,int>,int> =0>
+void f(T){}
+```
+
+它的作用和之前的写法是一样的，但这个写法的原理是什么呢？我们可以逐步解析：
+
+```cpp
+std::enable_if_t<std::is_same_v<T,int>,int> =0
+```
+
+这里的 `=0` 实际上是对前面 `enable_if_t` 表达式的默认实参，它起到的是无名默认实参的作用。也就是说，如果 `std::is_same_v<T,int>` 为 true，那么 `std::enable_if_t<true,int>` 变为：
+
+```cpp
+using enable_if_t = typename enable_if<true,int>::type;
+```
+
+`true` 会选择 enable_if 的偏特化，从而**有 `type` 别名**，它的类型就是是我们传入的第二个参数 `int`。因此，**`std::enable_if_t<true,int>` 实际上就是 int**。
+
+当然，如果 `std::is_same_v<T,int>` 为 `false`，则 `std::enable_if_t<false,int>` 会导致**代换失败**。
+不过因为“代换失败不是错误”，所以只是不选择函数模板 `f`，而不会导致编译错误。（当然了，如果没有一个符合条件的重载，那还是会报编译错误的：“*未找到匹配的重载函数*”）。
+
+---
 
 ```cpp
 template <class Type, class... Args>
 array(Type, Args...) -> array<std::enable_if_t<(std::is_same_v<Type, Args> && ...), Type>, sizeof...(Args) + 1>;
 ```
 
-以上示例，是显式指明了 std::enable_if 的第二个模板实参，为 `Type`。
+以上示例，是显式指明了 `std::enable_if` 的第二个模板实参，为 `Type`。
 
 它是我们[类模板](02类模板.md)推导指引那一节的示例的**改进版本**，我们使用 std::enable_if_t 与 C++17 折叠表达式，为它增加了约束，这几乎和 [libstdc++](https://github.com/gcc-mirror/gcc/blob/7a01cc711f33530436712a5bfd18f8457a68ea1f/libstdc%2B%2B-v3/include/std/array#L292-L295) 中的代码一样。
 
