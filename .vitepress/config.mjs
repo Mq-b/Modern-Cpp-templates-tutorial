@@ -54,6 +54,7 @@ export default defineConfig({
             collapsed: true,
             items: [
               { text: '使用模板包装C风格API进行调用', link: tutorial2_path + '使用模板包装C风格API进行调用' },
+              { text: 'Linux中封装POSIX接口编写thread类', link: tutorial2_path + 'Linux中封装POSIX接口编写thread类' },
             ]
           },
           { text: '总结', link: tutorial_path + '12总结' },
