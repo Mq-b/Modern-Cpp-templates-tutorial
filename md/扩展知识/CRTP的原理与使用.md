@@ -72,6 +72,96 @@ class X : public Base<X> {
 };
 ```
 
+## 使用 CRTP 模式实现静态多态性并复用代码
+
+虚函数的价值在于，作为一个参数传入其他函数时 可以复用那个函数里的代码，而不需要在需求频繁变动与增加的时候一直修改。
+
+```cpp
+class BaseVirtual {
+public:
+    virtual void addWater(int amount) = 0; // 纯虚函数声明
+};
+
+class XVirtual : public BaseVirtual {
+public:
+    void addWater(int amount) override {
+        std::cout << "XVirtual 设备加了 " << amount << " 毫升水\n";
+    }
+};
+
+class YVirtual : public BaseVirtual {
+public:
+    void addWater(int amount) override {
+        std::cout << "YVirtual 设备加了 " << amount << " 毫升水\n";
+    }
+};
+
+// 接口，父类的引用
+void processWaterAdditionVirtual(BaseVirtual& r, int amount) {
+    if (amount > 0) {
+        r.addWater(amount);
+    } else {
+        std::cerr << "无效数量: " << amount << '\n'; // 错误处理
+    }
+}
+
+int main(){
+    XVirtual xVirtual;
+    YVirtual yVirtual;
+
+    processWaterAdditionVirtual(xVirtual, 50);
+    processWaterAdditionVirtual(yVirtual, 100);
+    processWaterAdditionVirtual(xVirtual, -10);
+}
+```
+
+> [运行](https://godbolt.org/z/Wjfx1TfMh)测试。
+
+**CRTP 同样可以，并且还是静态类型安全，这不成问题：**
+
+```cpp
+template <typename Derived>
+class Base {
+public:
+    void addWater(int amount) {
+        static_cast<Derived*>(this)->impl_addWater(amount);
+    }
+};
+
+class X : public Base<X> {
+friend Base<X>;
+    void impl_addWater(int amount) {
+        std::cout << "X 设备加了 " << amount << " 毫升水\n";
+    }
+};
+class Y : public Base<Y> {
+friend Base<Y>;
+    void impl_addWater(int amount) {
+        std::cout << "Y 设备加了 " << amount << " 毫升水\n";
+    }
+};
+
+template <typename T>
+void processWaterAddition(Base<T>& r, int amount) {
+    if (amount > 0) {
+        r.addWater(amount);
+    } else {
+        std::cerr << "无效数量: " << amount << '\n';
+    }
+}
+
+int main() {
+    X x;
+    Y y;
+
+    processWaterAddition(x, 50);
+    processWaterAddition(y, 100);
+    processWaterAddition(x, -10);
+}
+```
+
+> [运行](https://godbolt.org/z/YoabKjMhh)测试。
+
 ## C++23 的改动-显式对象形参
 
 C++23 引入了**显式对象形参**，让我们的 `CRTP` 的形式也出现了变化：
