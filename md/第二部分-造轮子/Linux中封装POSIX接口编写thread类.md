@@ -336,6 +336,8 @@ int main(){
 
 > [运行](https://godbolt.org/z/1j48Mh89x)测试。
 
+项目：<https://github.com/Mq-b/POSIX-thread>
+
 ## 总结
 
 其实这玩意没多少难度，唯一的难度就只有那个构造函数而已，剩下的代码和成员函数，甚至可以照着标准库抄一些，或者就是调用 POSIX 接口罢了。
